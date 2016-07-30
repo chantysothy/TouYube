@@ -1,0 +1,69 @@
+ <!DOCTYPE html>
+<html lang="en-US">
+<head><title>
+TouYube
+</title>
+<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+</head>
+<body>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl', function($scope, $http) {
+   $scope.files = [];
+   $scope.startTimer = function(){
+     setInterval(function(){  $scope.refresh(); }, 10000);
+   };
+   $scope.getInput = function(){
+	$scope.url = prompt("Please enter the youtube URL", "");
+	$scope.sendRequest();
+	$scope.url = "";
+  };
+  $scope.theClick = function(x){
+	audiofile = x;
+	
+  };
+   $scope.refresh = function(){
+ 	$http.get('/mp3').then(function(response){
+		$scope.files = response.data;
+	});
+
+};
+   $scope.sendRequest = function() {
+        var data = {
+                url:$scope.url
+            };
+ $http.post("/youtube", data).success(function(data, status) {
+            console.log('done');
+  });
+        }
+
+});
+</script>
+
+
+<div ng-app="myApp" ng-controller="myCtrl" ng-init="refresh(); startTimer()">
+
+
+<center><a href ="" ng-click="getInput()">
+<svg width="580" height="170">
+<text font-family='sans-serif' font-size="85" x="85" y="105" fill="black">Tou</text>	
+  <rect x="50" y="20" rx="20" ry="20" width="250" height="130"
+  style="fill:red;stroke:black;stroke-width:5;opacity:0.9"  transform="translate(190,0)" />
+ <text font-family='sans-serif' font-size="95" x="65" y="115" fill="white" transform="translate(190,0)" >Yube</text>
+</svg></a>
+</center>
+
+<div >
+<label>Search: <input ng-model="searchText"></label><hr>
+<table id="searchTextResults">
+  <tr ng-repeat="x in files | filter:searchText">
+    <td><a href=mp3/{{x}}>{{x}}</a></td>
+  </tr>
+</table>
+<hr>
+</div>
+</div>
+
+</body>
+</html>
